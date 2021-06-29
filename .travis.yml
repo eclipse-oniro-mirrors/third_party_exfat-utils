@@ -36,6 +36,7 @@ jobs:
       arch: s390x
     - os: osx
       osx_image: xcode12.2
+    - os: freebsd
 
 addons:
   apt:
@@ -45,6 +46,9 @@ addons:
     update: true
     casks:
       - osxfuse
+  pkg:
+    - libublio
+    - fusefs-libs
 
 script:
   - autoreconf --install
