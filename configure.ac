@@ -54,4 +54,9 @@ AC_CONFIG_FILES([
 	label/Makefile
 	mkfs/Makefile
 	Makefile])
+AC_ARG_ENABLE([user-mounts],
+              AS_HELP_STRING([--enable-user-mounts],
+                             [Allow non-privileged users to mount.]))
+AS_IF([test "x$enable_user_mounts" = "xyes"],
+      [AC_DEFINE([USER_MOUNTS], [], [Allow non-privileged users to mount.])])
 AC_OUTPUT

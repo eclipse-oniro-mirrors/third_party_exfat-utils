@@ -29,6 +29,7 @@ task:
       install_script: |
         apt-get update
         apt-get install -y libfuse-dev
+        modprobe fuse
 
     - name: macos
       macos_instance:
@@ -45,7 +46,7 @@ task:
 
   compile_script: |
     autoreconf --install
-    ./configure CFLAGS='-Wall -Wextra'
+    ./configure --enable-user-mounts CFLAGS='-Wall -Wextra'
     make -k
 
   test_script: |
@@ -53,3 +54,6 @@ task:
     mkfs/mkexfatfs -i 12345678 foo.img
     fsck/exfatfsck foo.img
     echo 'f1b3a11f781533f5b69086596be38367d0ebfb77  foo.img' | shasum -c
+    mkdir /tmp/foo
+    fuse/mount.exfat-fuse foo.img /tmp/foo
+    umount /tmp/foo
