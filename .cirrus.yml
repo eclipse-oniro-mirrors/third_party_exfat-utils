@@ -28,28 +28,22 @@ task:
         image: gcc:11-bullseye
       install_script: |
         apt-get update
-        apt-get install -y libfuse-dev
-
-    - name: macos
-      macos_instance:
-        image: big-sur-base
-      install_script: |
-        brew update --preinstall
-        brew install automake macfuse
-
-    - name: freebsd
-      freebsd_instance:
-        image_family: freebsd-13-0
-      install_script: |
-        pkg install -y autoconf automake fusefs-libs libublio pkgconf
+        apt-get install -y libfuse-dev gcc-aarch64-linux-gnu qemu-user
 
   compile_script: |
+    mkdir arm64root
+    wget -q http://ftp.us.debian.org/debian/pool/main/g/glibc/libc6_2.31-13_arm64.deb
+    dpkg-deb -x libc6_2.31-13_arm64.deb arm64root
+    wget -q http://ftp.us.debian.org/debian/pool/main/g/glibc/libc6-dev_2.31-13_arm64.deb
+    dpkg-deb -x libc6-dev_2.31-13_arm64.deb arm64root
+    wget -q http://ftp.us.debian.org/debian/pool/main/f/fuse/libfuse-dev_2.9.9-5_arm64.deb
+    dpkg-deb -x libfuse-dev_2.9.9-5_arm64.deb arm64root
     autoreconf --install
-    ./configure CFLAGS='-Wall -Wextra'
+    ./configure --host aarch64-linux-gnu --with-sysroot arm64root CFLAGS='-Wall -Wextra'
     make -k
 
   test_script: |
     dd if=/dev/zero of=foo.img bs=1048576 count=1
-    mkfs/mkexfatfs -i 12345678 foo.img
-    fsck/exfatfsck foo.img
+    qemu-aarch64 -L arm64root mkfs/mkexfatfs -i 12345678 foo.img
+    qemu-aarch64 -L arm64root fsck/exfatfsck foo.img
     echo 'f1b3a11f781533f5b69086596be38367d0ebfb77  foo.img' | shasum -c
