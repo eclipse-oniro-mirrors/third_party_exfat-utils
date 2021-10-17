@@ -44,6 +44,7 @@ task:
         image_family: freebsd-13-0
       install_script: |
         pkg install -y autoconf automake fusefs-libs libublio pkgconf
+        kldload fusefs
 
   compile_script: |
     autoreconf --install
@@ -55,3 +56,8 @@ task:
     mkfs/mkexfatfs -i 12345678 foo.img
     fsck/exfatfsck foo.img
     echo 'f1b3a11f781533f5b69086596be38367d0ebfb77  foo.img' | shasum -c
+    if which sudo; then
+        mkdir /tmp/foo
+        sudo fuse/mount.exfat-fuse foo.img /tmp/foo
+        sudo umount /tmp/foo
+    fi
