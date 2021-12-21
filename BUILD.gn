@@ -1,0 +1,132 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import("//build/ohos.gni")
+config("exfat-defaults") {
+  cflags = [
+    "-std=gnu99",
+    "-Wno-error",
+    "-D_FILE_OFFSET_BITS=64",
+    "-DPACKAGE=\"exfat\"",
+    "-DVERSION=\"1.3.0\"",
+  ]
+  include_dirs = [ "//developtools/liblog" ]
+}
+
+ohos_shared_library("libexfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [
+    "libexfat/cluster.c",
+    "libexfat/io.c",
+    "libexfat/log.c",
+    "libexfat/lookup.c",
+    "libexfat/mount.c",
+    "libexfat/node.c",
+    "libexfat/repair.c",
+    "libexfat/time.c",
+    "libexfat/utf.c",
+    "libexfat/utils.c",
+  ]
+  include_dirs = [ "./libexfat" ]
+
+  deps = []
+  install_enable = true
+  subsystem_name = "storage_manager"
+  part_name = "storage_standard"
+  install_images = ["system"]
+}
+
+###################################################
+##Build mkfs.exfat
+ohos_executable("mkfs.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [
+    "mkfs/cbm.c",
+    "mkfs/fat.c",
+    "mkfs/main.c",
+    "mkfs/mkexfat.c",
+    "mkfs/rootdir.c",
+    "mkfs/uct.c",
+    "mkfs/uctc.c",
+    "mkfs/vbr.c",
+  ]
+
+  include_dirs = [
+    "./libexfat",
+    "./mkfs",
+  ]
+
+  deps = [ ":libexfat" ]
+  install_enable = true
+  subsystem_name = "storage_manager"
+  part_name = "storage_standard"
+  install_images = ["system"]
+}
+
+###################################################
+##Build fsck.exfat
+ohos_executable("fsck.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "fsck/main.c" ]
+
+  include_dirs = [
+    "./libexfat",
+    "./mkfs",
+    "./fsck",
+  ]
+
+  deps = [ ":libexfat" ]
+  install_enable = true
+  subsystem_name = "storage_manager"
+  part_name = "storage_standard"
+  install_images = ["system"]
+}
+
+###################################################
+##Build dumpexfat
+ohos_executable("dumpexfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "dump/main.c" ]
+
+  include_dirs = [
+    "./libexfat",
+    "./mkfs",
+    "./fsck",
+    "./dump",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "storage_manager"
+  part_name = "storage_standard"
+}
+
+###################################################
+##Build exfatlable
+ohos_executable("exfatlable") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "label/main.c" ]
+
+  include_dirs = [
+    "./libexfat",
+    "./mkfs",
+    "./fsck",
+    "./label",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "storage_manager"
+  part_name = "storage_standard"
+}
