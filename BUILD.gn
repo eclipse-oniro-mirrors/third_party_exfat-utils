@@ -54,7 +54,7 @@ ohos_shared_library("libexfat") {
   deps = []
   install_enable = true
   subsystem_name = "filemanagement"
-  part_name = "storage_standard"
+  part_name = "storage_service"
   install_images = [ "system" ]
 }
 
@@ -81,7 +81,7 @@ ohos_executable("mkfs.exfat") {
   deps = [ ":libexfat" ]
   install_enable = true
   subsystem_name = "filemanagement"
-  part_name = "storage_standard"
+  part_name = "storage_service"
   install_images = [ "system" ]
 }
 
@@ -100,7 +100,7 @@ ohos_executable("fsck.exfat") {
   deps = [ ":libexfat" ]
   install_enable = true
   subsystem_name = "filemanagement"
-  part_name = "storage_standard"
+  part_name = "storage_service"
   install_images = [ "system" ]
 }
 
@@ -119,7 +119,7 @@ ohos_executable("dumpexfat") {
 
   deps = [ ":libexfat" ]
   subsystem_name = "filemanagement"
-  part_name = "storage_standard"
+  part_name = "storage_service"
 }
 
 ###################################################
@@ -137,5 +137,5 @@ ohos_executable("exfatlable") {
 
   deps = [ ":libexfat" ]
   subsystem_name = "filemanagement"
-  part_name = "storage_standard"
+  part_name = "storage_service"
 }
