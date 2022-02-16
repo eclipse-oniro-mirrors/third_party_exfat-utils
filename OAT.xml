@@ -50,14 +50,11 @@
         <licensefile>COPYING</licensefile>
         <policylist>
             <policy name="projectPolicy" desc="">
-                <policyitem type="license" name="GPL-2.0-or-later" path="*/.*" rule="may" group="defaultGroup" filefilter="GPL-2.0-or-later" desc="License is new."/>
-                <policyitem type="copyright" name="Andrew Nayenko" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="独立进程，独立使用"/>
             </policy>
         </policylist>
-
         <filefilterlist>
             <filefilter name="defaultFilter" desc="Files not to check">
-                <filteritem type="filename" name="*.8|README.OpenSource|ChangeLog" desc="NoLicenseHeader"/>
             </filefilter>
             <filefilter name="defaultPolicyFilter" desc="Filters for compatibility，license header policies">
             </filefilter>
@@ -72,78 +69,5 @@
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
             </filefilter>
         </filefilterlist>
-        <licensematcherlist>
-            <licensematcher name="GPL-2.0-or-later" desc="">
-                <licensetext name="
-                 /*
-                    main.c (01.09.09)
-                    FUSE-based exFAT implementation. Requires FUSE 2.6 or later.
-                
-                    Free exFAT implementation.
-                    Copyright (C) 2010-2018  Andrew Nayenko
-                 
-                    This program is free software; you can redistribute it and/or modify
-                    it under the terms of the GNU General Public License as published by
-                    the Free Software Foundation, either version 2 of the License, or
-                    (at your option) any later version.
-                 
-                    This program is distributed in the hope that it will be useful,
-                    but WITHOUT ANY WARRANTY; without even the implied warranty of
-                    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                    GNU General Public License for more details.
-                 
-                    You should have received a copy of the GNU General Public License along
-                    with this program; if not, write to the Free Software Foundation, Inc.,
-                    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                 */
-                 " desc=""/>
-                <licensetext name="
-                /*
-	                mount.c (22.10.09)
-                    exFAT file system implementation library.
-                
-                    Free exFAT implementation.
-                    Copyright (C) 2010-2018  Andrew Nayenko
-                
-                	This program is free software; you can redistribute it and/or modify
-                    it under the terms of the GNU General Public License as published by
-                    the Free Software Foundation, either version 2 of the License, or
-                    (at your option) any later version.
-                
-                	This program is distributed in the hope that it will be useful,
-                    but WITHOUT ANY WARRANTY; without even the implied warranty of
-                    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                    GNU General Public License for more details.
-                
-                	You should have received a copy of the GNU General Public License along
-                    with this program; if not, write to the Free Software Foundation, Inc.,
-                    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                */
-                 " desc=""/>
-                 <licensetext name="
-                 /*
-	                vbr.c (09.11.10)
-                    Volume Boot Record creation code.
-                
-                	Free exFAT implementation.
-                    Copyright (C) 2011-2018  Andrew Nayenko
-                
-                	This program is free software; you can redistribute it and/or modify
-                    it under the terms of the GNU General Public License as published by
-                    the Free Software Foundation, either version 2 of the License, or
-                    (at your option) any later version.
-                
-                	This program is distributed in the hope that it will be useful,
-                    but WITHOUT ANY WARRANTY; without even the implied warranty of
-                    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                    GNU General Public License for more details.
-                
-                	You should have received a copy of the GNU General Public License along
-                    with this program; if not, write to the Free Software Foundation, Inc.,
-                    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                */
-                 " desc=""/>
-            </licensematcher>
-        </licensematcherlist>
     </oatconfig>
 </configuration>
