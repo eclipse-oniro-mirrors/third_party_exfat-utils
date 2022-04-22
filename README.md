@@ -1,83 +1,119 @@
-About
------
 
-This project aims to provide a full-featured [exFAT][1] file system implementation for Unix-like systems. It consists of a [FUSE][2] module (fuse-exfat) and a set of utilities (exfat-utils).
+## exfatprogs
+As new exfat filesystem is merged into linux-5.7 kernel, exfatprogs is
+created as an official userspace utilities that contain all of the standard
+utilities for creating and fixing and debugging exfat filesystem in linux
+system. The goal of exfatprogs is to provide high performance and quality
+at the level of exfat utilities in windows. And this software is licensed
+under the GNU General Public License Version 2.
 
-Supported operating systems:
+## Building exfatprogs
+Install prerequisite packages:
+```
+For Ubuntu:
+    sudo apt-get install autoconf libtool pkg-config
 
-* GNU/Linux
-* Mac OS X 10.5 or later
-* FreeBSD
+For Fedora, RHEL:
+    sudo yum install autoconf automake libtool
+```
 
-Most GNU/Linux distributions already have fuse-exfat and exfat-utils in their repositories, so you can just install and use them. The next chapter describes how to compile them from source.
-
-Compiling
----------
-
-To build this project on GNU/Linux you need to install the following packages:
-
-* [git][4]
-* [autoconf][5]
-* [automake][6]
-* [pkg-config][7]
-* fuse-devel (or libfuse-dev)
-* [gcc][8]
-* [make][9]
-
-On Mac OS X:
-
-* autoconf
-* automake
-* pkg-config
-* [OSXFUSE][10]
-* [Xcode][11] (legacy versions include autotools but their versions are too old)
-
-On OpenBSD:
-
-* git
-* autoconf (set AUTOCONF_VERSION environment variable)
-* automake (set AUTOMAKE_VERSION environment variable)
-
-Get the source code, change directory and compile:
-
-    git clone https://github.com/relan/exfat.git
-    cd exfat
-    autoreconf --install
+Build steps:
+```
+    cd into the exfatprogs directory:
+    ./autogen.sh
     ./configure
     make
-
-Then install driver and utilities (from root):
-
     make install
+```
 
-You can remove them using this command (from root):
+## Using exfatprogs
+```
+- mkfs.exfat:
+    Build a exfat filesystem on a device or partition(e.g. /dev/hda1, dev/sda1).
 
-    make uninstall
+Usage example:
+    1. No option(default) : cluster size adjustment as per device size, quick format.
+        mkfs.exfat /dev/sda1
+    2. To change cluster size(KB or MB or Byte) user want
+        mkfs.exfat -c 1048576 /dev/sda1
+        mkfs.exfat -c 1024K /dev/sda1
+        mkfs.exfat -c 1M /dev/sda1
+    3. For full format(zero out)
+        mkfs.exfat -f /dev/sda1
+    4. For set volume label, use -l option with string user want.
+        mkfs.exfat -L "my usb" /dev/sda1
+    5. To change boundary alignment(KB or MB or Byte) user want
+        mkfs.exfat -b 16777216 /dev/sda1
+        mkfs.exfat -b 16384K /dev/sda1
+        mkfs.exfat -b 16M /dev/sda1
 
-Mounting
---------
+- fsck.exfat:
+    Check the consistency of your exfat filesystem and optionally repair a corrupted device formatted by exfat.
 
-Modern GNU/Linux distributions (with [util-linux][12] 2.18 or later) will mount exFAT volumes automatically. Anyway, you can mount manually (from root):
+Usage example:
+    1. check the consistency.
+        fsck.exfat /dev/sda1
+    2. repair and fix.(preparing)
 
-    mount.exfat-fuse /dev/spec /mnt/exfat
+- tune.exfat:
+    Adjust tunable filesystem parameters on an exFAT filesystem
 
-where /dev/spec is the [device file][13], /mnt/exfat is a mountpoint.
+Usage example:
+    1. print current volume label.
+        tune.exfat -l /dev/sda1
+    2. set new volume label.
+        tune.exfat -L "new label" /dev/sda1
+    3. print current volume serial.
+        tune.exfat -i /dev/sda1
+    4. set new volume serial.
+        tune.exfat -I 0x12345678 /dev/sda1
 
-Feedback
---------
+- exfatlabel:
+    Get or Set volume label or serial
 
-If you have any questions, issues, suggestions, bug reports, etc. please create an [issue][3]. Pull requests are also welcome!
+Usage example:
+    1. get current volume label.
+        exfatlabel /dev/sda1
+    2. set new volume label.
+        exfatlabel /dev/sda1 "new label"
+    3. get current volume serial.
+        exfatlabel -i /dev/sda1
+    4. set new volume serial.
+        exfatlabel -i /dev/sda1 0x12345678
 
-[1]: https://en.wikipedia.org/wiki/ExFAT
-[2]: https://en.wikipedia.org/wiki/Filesystem_in_Userspace
-[3]: https://github.com/relan/exfat/issues
-[4]: https://www.git-scm.com/
-[5]: https://www.gnu.org/software/autoconf/
-[6]: https://www.gnu.org/software/automake/
-[7]: http://www.freedesktop.org/wiki/Software/pkg-config/
-[8]: https://gcc.gnu.org/
-[9]: https://www.gnu.org/software/make/
-[10]: https://osxfuse.github.io/
-[11]: https://en.wikipedia.org/wiki/Xcode
-[12]: https://www.kernel.org/pub/linux/utils/util-linux/
-[13]: https://en.wikipedia.org/wiki/Device_file
+- dump.exfat:
+    Show on-disk information
+
+Usage example:
+    dump.exfat /dev/sda1
+
+```
+
+## Benchmarks
+
+Some fsck implementations were tested and compared for Samsung 64GB Pro
+microSDXC UHS-I Class 10 which was filled up to 35GB with 9948 directories
+and 16506 files by fsstress.
+
+The difference in the execution time for each testing is very small.
+
+
+| Implementation       | version         | execution time (seconds) |
+|----------------------|-----------------|--------------------------|
+| **exfatprogs fsck**  | 1.0.4           | 11.561                   |
+| Windows fsck         | Windows 10 1809 | 11.449                   |
+| [exfat-fuse fsck]    | 1.3.0           | 68.977                   |
+
+[exfat-fuse fsck]: https://github.com/relan/exfat
+
+## Sending feedback
+If you have any issues, please create [issues][1] or contact to [Namjae Jeon](mailto:linkinjeon@kernel.org) and
+[Hyunchul Lee](mailto:hyc.lee@gmail.com).
+[Contributions][2] are also welcome.
+
+[1]: https://github.com/exfatprogs/exfatprogs/issues
+[2]: https://github.com/exfatprogs/exfatprogs/pulls
+
+## Contributor information
+* Please base your pull requests on the `exfat-next` branch.
+* Make sure you add 'Signed-Off' information to your commits (e.g. `git commit --signoff`).
