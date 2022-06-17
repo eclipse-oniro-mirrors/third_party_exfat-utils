@@ -18,6 +18,7 @@ import("//build/ohos.gni")
 
 group("exfat-utils") {
   deps = [
+    ":exfatlabel",
     ":fsck.exfat",
     ":mkfs.exfat",
   ]
@@ -117,8 +118,8 @@ ohos_executable("dump.exfat") {
 }
 
 ###################################################
-##Build exfatlable
-ohos_executable("exfatlable") {
+##Build exfatlabel
+ohos_executable("exfatlabel") {
   configs = [ ":exfat-defaults" ]
   sources = [ "label/label.c" ]
 
